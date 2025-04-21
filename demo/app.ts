@@ -1,5 +1,7 @@
 import {IonButton} from '@ionic/core/components/ion-button'
 import {IonToast} from '@ionic/core/components/ion-toast'
+import {IonList} from '@ionic/core/components/ion-list'
+
 
 let baseUrl = 'https://dae-mobile-assignment.hkit.cc/api'
 
@@ -9,6 +11,8 @@ declare var refreshButton: IonButton
 refreshButton.addEventListener('click', loaditems)
 
 declare var errorToast: IonToast
+
+declare var courseList: IonList
 
 async function loaditems() {
     console.log("Loading items...");
@@ -21,6 +25,11 @@ async function loaditems() {
             if(json.error){
             errorToast.message = json.error
             errorToast.present()
+
+courseList.querySelectorAll('ion-skeleton-text').forEach(skeleton => {
+    //skeleton.remove()
+})
+
             return
         }
         type Item = {
