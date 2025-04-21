@@ -39,7 +39,7 @@ async function loaditems() {
         method: 'GET',
         headers: {Authorization: `Bearer ${token}`}
     })
-    let json = await res.json()
+    let json = await res.json() as Result
             if(json.error){
             errorToast.message = json.error
             errorToast.present()
@@ -47,6 +47,20 @@ async function loaditems() {
             return
         }
         errorToast.dismiss()
+
+        let maxPage = Math.ceil(json.pagination.total / json.pagination.limit)
+
+        loadMoreButton.hidden = json.pagination.page >= maxPage
+
+        type Result = {
+            error:string
+            items: ServerItem[]
+            pagination:{
+                page:number
+                limit:number
+                total:number
+            }
+        }
 
         type ServerItem = {
             category: string
@@ -89,7 +103,7 @@ async function loaditems() {
     }
     loaditems()
 
-    function loadMoreItems(){
+    function loadMoreItems() {
         page++
         loaditems()
     }
