@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev" : "npm run build  -- --watch",
+    "dev": "npm run build  -- --watch",
     "build": "esbuild app.ts --bundle --outfile=bundle.js"
   },
   "keywords": [],

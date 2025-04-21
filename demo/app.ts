@@ -14,8 +14,18 @@ declare var errorToast: IonToast
 
 declare var courseList: IonList
 
+let skeletonItem = courseList.querySelector('.skeleton-item')!
+skeletonItem.remove()
+
+
 async function loaditems() {
-    console.log("Loading items...");
+    console.log("Loading items...")
+    courseList.textContent=''
+    courseList.appendChild(skeletonItem.cloneNode(true))
+    courseList.appendChild(skeletonItem.cloneNode(true))
+    courseList.appendChild(skeletonItem.cloneNode(true))
+    courseList.appendChild(skeletonItem.cloneNode(true))
+    courseList.appendChild(skeletonItem.cloneNode(true))
     let token = ''
     let res = await fetch(`${baseUrl}/courses` , {
         method: 'GET',
@@ -25,14 +35,10 @@ async function loaditems() {
             if(json.error){
             errorToast.message = json.error
             errorToast.present()
-
-courseList.querySelectorAll('ion-skeleton-text').forEach(skeleton => {
-    //skeleton.remove()
-})
-
+            courseList.textContent = ''
             return
         }
-        type Item = {
+        type ServerItem = {
             category: string
             description: string
             id: number
@@ -44,7 +50,8 @@ courseList.querySelectorAll('ion-skeleton-text').forEach(skeleton => {
             title: string
             video_url: string
     }
-        let items = json.items.map((item: Item) => {
+        let ServerItems =json.items as ServerItem[]
+        let useditems = json.items.map((item: ServerItem) => {
             return {
                 title: item.category,
                 domin: item.language,
@@ -55,7 +62,20 @@ courseList.querySelectorAll('ion-skeleton-text').forEach(skeleton => {
                 videoUrl: item.video_url,    
             }
         })
-        console.log('items:', items)    
+        console.log('items:', useditems)
+
+        courseList.textContent=''
+        for(let item of useditems){
+            let card = document.createElement('ion-card')
+            card.innerHTML = `
+           <ion-card-header>
+            <ion-card-title>${item.title}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+        `
+        
+        courseList.appendChild(card)
+        }
     }
     loaditems()
 
