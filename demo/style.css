@@ -68,6 +68,7 @@ body {
     height: 18.75rem;
   }
   
+
   /* Filter styles */
   .filter-container {
     display: flex;
@@ -87,7 +88,6 @@ body {
     display: flex;
     align-items: center;
     flex-wrap: auto;
-    min-width: 12.5rem;
   }
   
   .reset-button {
