@@ -1,11 +1,14 @@
 import {IonButton} from '@ionic/core/components/ion-button'
+import {IonToast} from '@ionic/core/components/ion-toast'
 
 let baseUrl = 'https://dae-mobile-assignment.hkit.cc/api'
 
 // let items = [1, 2, 3]
 
 declare var refreshButton: IonButton
-refreshButton?.addEventListener('click', loaditems)
+refreshButton.addEventListener('click', loaditems)
+
+declare var errorToast: IonToast
 
 async function loaditems() {
     console.log("Loading items...");
@@ -16,7 +19,8 @@ async function loaditems() {
     })
     let json = await res.json()
             if(json.error){
-            alert(json.error)
+            errorToast.message = json.error
+            errorToast.present()
             return
         }
         type Item = {
