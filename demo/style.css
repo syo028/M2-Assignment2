@@ -184,5 +184,9 @@ body {
     color: #000000; 
     font-size: 1.5rem;
   }
+
+  [hidden] {
+    display: none;
+  }
   
  
