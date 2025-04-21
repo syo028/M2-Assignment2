@@ -14,8 +14,15 @@ declare var errorToast: IonToast
 
 declare var courseList: IonList
 
+declare var loadMoreButton: IonButton
+loadMoreButton.addEventListener('click', loadMoreItems)
+
+
+
 let skeletonItem = courseList.querySelector('.skeleton-item')!
 skeletonItem.remove()
+
+let page = 1
 
 
 async function loaditems() {
@@ -25,9 +32,10 @@ async function loaditems() {
     courseList.appendChild(skeletonItem.cloneNode(true))
     courseList.appendChild(skeletonItem.cloneNode(true))
     courseList.appendChild(skeletonItem.cloneNode(true))
-    courseList.appendChild(skeletonItem.cloneNode(true))
     let token = ''
-    let res = await fetch(`${baseUrl}/courses` , {
+    let params = new URLSearchParams()
+    params.set('page', page.toString())
+    let res = await fetch(`${baseUrl}/courses?${params})}` , {
         method: 'GET',
         headers: {Authorization: `Bearer ${token}`}
     })
@@ -38,6 +46,8 @@ async function loaditems() {
             courseList.textContent = ''
             return
         }
+        errorToast.dismiss()
+
         type ServerItem = {
             category: string
             description: string
@@ -78,5 +88,10 @@ async function loaditems() {
         }
     }
     loaditems()
+
+    function loadMoreItems(){
+        page++
+        loaditems()
+    }
 
 
