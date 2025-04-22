@@ -1,6 +1,5 @@
-import {IonButton} from '@ionic/core/components/ion-button'
-import {IonToast} from '@ionic/core/components/ion-toast'
-import {IonList} from '@ionic/core/components/ion-list'
+// Using declare instead of imports to avoid TypeScript errors
+// These components are loaded from the HTML file
 
 
 let baseUrl = 'https://dae-mobile-assignment.hkit.cc/api'
@@ -35,7 +34,7 @@ async function loaditems() {
     let token = ''
     let params = new URLSearchParams()
     params.set('page', page.toString())
-    let res = await fetch(`${baseUrl}/courses?${params})}` , {
+    let res = await fetch(`${baseUrl}/courses?${params}` , {
         method: 'GET',
         headers: {Authorization: `Bearer ${token}`}
     })
@@ -74,9 +73,10 @@ async function loaditems() {
             title: string
             video_url: string
     }
-        let ServerItems =json.items as ServerItem[]
-        let useditems = json.items.map((item: ServerItem) => {
+        let serverItems = json.items as ServerItem[]
+        let uiItems = json.items.map((item: ServerItem) => {
             return {
+                id: item.id,
                 title: item.category,
                 domin: item.language,
                 level: item.level,
@@ -86,16 +86,40 @@ async function loaditems() {
                 videoUrl: item.video_url,    
             }
         })
-        console.log('items:', useditems)
+        console.log('items:', uiItems)
 
         courseList.textContent=''
-        for(let item of useditems){
+        for(let item of uiItems){
             let card = document.createElement('ion-card')
             card.innerHTML = `
-           <ion-card-header>
-            <ion-card-title>${item.title}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
+            <ion-card style="width: 100%;">
+              <div class="video-thumbnail">
+                <img src="${item.imageUrl}" alt="${item.title}" class="course-image">
+                <div class="play-button" onclick="openVideoModal('${item.videoUrl}', '${item.title}')">
+                  <ion-icon name="play" color="light" size="large"></ion-icon>
+                </div>
+                <div class="favorite-button" id="fav-btn-${item.id}">
+                  <ion-icon name="heart-outline"></ion-icon>
+                </div>
+              </div>
+              <ion-card-content>
+                <div class="course-details">
+                  <div class="course-title">${item.category}</div>
+                  <div class="course-meta">
+                    <span>程式語言: Python 3.x</span>
+                    <span>程度: ${item.level}</span>
+                  </div>
+                  <div class="course-description">
+                    ${item.description}
+                  </div>
+                  <div class="tag-container">
+                    ${item.tags.map(tag => 
+                      `<ion-chip  data-type="${tag} onclick="filterByTag('${tag}')">${tag}</ion-chip>`
+                    ).join('')}
+                  </div>
+                </div>
+              </ion-card-content>
+            </ion-card>
         `
         
         courseList.appendChild(card)
