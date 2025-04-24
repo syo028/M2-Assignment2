@@ -103,7 +103,6 @@ body {
     display: flex;
     padding: 0 1rem 0.625rem;
     flex-wrap: wrap;
-    gap: 0.5rem;
   }
   
   /* Empty state */

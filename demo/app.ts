@@ -77,7 +77,7 @@ async function loaditems() {
         let uiItems = json.items.map((item: ServerItem) => {
             return {
                 id: item.id,
-                title: item.category,
+                title: item.title,
                 domin: item.language,
                 level: item.level,
                 description: item.description,
@@ -104,7 +104,7 @@ async function loaditems() {
               </div>
               <ion-card-content>
                 <div class="course-details">
-                  <div class="course-title">${item.category}</div>
+                  <div class="course-title">${item.title}</div>
                   <div class="course-meta">
                     <span>程式語言: Python 3.x</span>
                     <span>程度: ${item.level}</span>
