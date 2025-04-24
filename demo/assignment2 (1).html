@@ -75,7 +75,16 @@
         </ion-header>
         <ion-content>
             <ion-list id="courseList"></ion-list>
-            <ion-button id="loadMoreButton" expand="block" style="background-color: #4CAF50; color: white; border-radius: 10px; margin: 10px;">載入更多</ion-button>
+            <div style="display: flex; justify-content: space-between; margin: 10px;">
+                <ion-button id="prevPageButton" expand="block" style="margin: 0 5px;">
+                    <ion-icon name="arrow-back" slot="start"></ion-icon>
+                    上一頁
+                </ion-button>
+                <ion-button id="nextPageButton" expand="block" style="margin: 0 5px;">
+                    下一頁
+                    <ion-icon name="arrow-forward" slot="end"></ion-icon>
+                </ion-button>
+            </div>
             <ion-toast id="errorToast" duration="5000" color="danger"></ion-toast>
             <ion-loading id="loading" message="載入中..." hidden></ion-loading>
         </ion-content>
@@ -155,12 +164,19 @@
         }
 
         function updatePagination(pagination) {
-            const loadMoreButton = document.getElementById('loadMoreButton');
-            loadMoreButton.hidden = pagination.page * pagination.limit >= pagination.total;
+            const prevPageButton = document.getElementById('prevPageButton');
+            const nextPageButton = document.getElementById('nextPageButton');
+            prevPageButton.hidden = pagination.page === 1;
+            nextPageButton.hidden = pagination.page * pagination.limit >= pagination.total;
         }
 
         // Pagination
-        document.getElementById('loadMoreButton').addEventListener('click', () => {
+        document.getElementById('prevPageButton').addEventListener('click', () => {
+            currentPage--;
+            fetchCourses(currentPage);
+        });
+
+        document.getElementById('nextPageButton').addEventListener('click', () => {
             currentPage++;
             fetchCourses(currentPage);
         });

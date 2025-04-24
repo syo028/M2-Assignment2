@@ -109,9 +109,16 @@
           </ion-label>
         </ion-item>
       </ion-list>
-      <ion-button id="loadMoreButton" expand="block" hidden >
-        Load More               
-      </ion-button>
+      <div style="display: flex; justify-content: space-between; padding: 10px;">
+        <ion-button id="prevPageButton">
+          <ion-icon name="chevron-back-outline" slot="start"></ion-icon>
+          上一頁
+        </ion-button>
+        <ion-button id="nextPageButton">
+          下一頁
+          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+        </ion-button>
+      </div>
 
       <ion-toast id="errorToast" duration ="5000" color = "danger"></ion-toast>
 
