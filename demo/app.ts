@@ -31,6 +31,55 @@ skeletonItem.remove()
 // let itemCardTemplate = courseList.querySelector('.item-card-template')!
 // itemCardTemplate.remove()
 
+declare var loginModal: HTMLIonModalElement
+declare var successToast: IonToast
+
+// 新增收藏相關函數
+async function toggleFavorite(itemId: number) {
+    const token = localStorage.getItem('token')
+    if (!token) {
+        loginModal.present()
+        return false
+    }
+
+    try {
+        const isFavorite = await checkIsFavorite(itemId)
+        const url = `${baseUrl}/bookmarks/${itemId}`
+        const method = isFavorite ? 'DELETE' : 'POST'
+        
+        const res = await fetch(url, {
+            method,
+            headers: { Authorization: `Bearer ${token}` }
+        })
+
+        if (!res.ok) throw new Error('收藏操作失敗')
+        
+        successToast.message = isFavorite ? '已取消收藏' : '已加入收藏'
+        successToast.present()
+        return !isFavorite
+    } catch (error) {
+        errorToast.message = error.message
+        errorToast.present()
+        return false
+    }
+}
+
+async function checkIsFavorite(itemId: number): Promise<boolean> {
+    const token = localStorage.getItem('token')
+    if (!token) return false
+
+    try {
+        const res = await fetch(`${baseUrl}/bookmarks`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        if (!res.ok) return false
+        
+        const data = await res.json()
+        return data.item_ids.includes(itemId)
+    } catch {
+        return false
+    }
+}
 
 async function loaditems() {
     console.log("Loading items...")
@@ -39,7 +88,9 @@ async function loaditems() {
     courseList.appendChild(skeletonItem.cloneNode(true))
     courseList.appendChild(skeletonItem.cloneNode(true))
     courseList.appendChild(skeletonItem.cloneNode(true))
-    let token = ''
+    
+    let token = localStorage.getItem('token')
+    
     let params = new URLSearchParams()
     // *** 現在 page 應該已經被定義 ***
     params.set('page', page.toString()) 
@@ -122,16 +173,24 @@ async function loaditems() {
         courseList.appendChild(card)
 
         // 為收藏按鈕添加點擊事件
-        const favBtn = card.querySelector(`#fav-btn-${item.id}`)
+        let favBtn = card.querySelector(`#fav-btn-${item.id}`)
+
         if (favBtn) {
-            favBtn.addEventListener('click', (event) => {
+            // 檢查初始收藏狀態
+            const initialFavorite = await checkIsFavorite(item.id)
+            const icon = favBtn.querySelector('ion-icon')
+            if (icon) {
+                icon.name = initialFavorite ? 'heart' : 'heart-outline'
+                favBtn.classList.toggle('active', initialFavorite)
+            }
+
+            favBtn.addEventListener('click', async (event) => {
                 event.stopPropagation()
                 const icon = favBtn.querySelector('ion-icon')
                 if (icon) {
-                    const isFavorite = icon.name === 'heart'
-                    icon.name = isFavorite ? 'heart-outline' : 'heart'
-                    favBtn.classList.toggle('active')
-                    // 可以在這裡添加收藏相關的 API 調用
+                    const newFavoriteState = await toggleFavorite(item.id)
+                    icon.name = newFavoriteState ? 'heart' : 'heart-outline'
+                    favBtn.classList.toggle('active', newFavoriteState)
                 }
             })
         }
