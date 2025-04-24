@@ -158,33 +158,32 @@
       <ion-modal id="loginModal">
         <ion-header>
           <ion-toolbar>
-            <ion-title>登入</ion-title>
-            <ion-button>
-              <ion-icon name="close" slot="icon-only"></ion-icon>
-            </ion-button>
+            <ion-title>登入/註冊</ion-title>
+            <ion-buttons slot="end">
+              <ion-button id="closeLoginModalButton">
+                <ion-icon name="close"></ion-icon>
+              </ion-button>
+            </ion-buttons>
           </ion-toolbar>
-          </ion-header>
-          <ion-content>
-            <ion-list>
-              <ion-input 
-                id="usernameInput" 
-                type="text" 
-                label="Username"
-                label-placement="floating"
-              ></ion-input>
-              <ion-input 
-                id="passwordInput"
-                type="password" 
-                label="Password"
-                label-placement="floating"
-              ></ion-input>
-             <ion-button expand="block" id="loginButton">登入</ion-button>
-             <ion-button expand="block" id="registerButton">註冊</ion-button>
-            </ion-list>
-          </ion-content>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-item>
+            <ion-label position="stacked">帳號</ion-label>
+            <ion-input id="usernameInput" type="text" placeholder="請輸入帳號"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">密碼</ion-label>
+            <ion-input id="passwordInput" type="password" placeholder="請輸入密碼"></ion-input>
+          </ion-item>
+          <div class="ion-padding">
+            <ion-button id="loginButton" expand="block">登入</ion-button>
+            <ion-button id="registerButton" expand="block" color="secondary">註冊</ion-button>
+          </div>
+        </ion-content>
       </ion-modal>
 
-      <ion-toast id="errorToast" duration ="5000" color = "danger"></ion-toast>
+      <ion-toast id="errorToast" duration="3000" color="danger"></ion-toast>
+      <ion-toast id="successToast" duration="2000" color="success"></ion-toast>
 
     </ion-content>
 

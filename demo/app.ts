@@ -35,6 +35,11 @@ itemCardTemplate.remove()
 
 declare var loginModal: HTMLIonModalElement
 declare var successToast: IonToast
+declare var usernameInput: HTMLIonInputElement
+declare var passwordInput: HTMLIonInputElement
+declare var loginButton: HTMLIonButtonElement
+declare var registerButton: HTMLIonButtonElement
+declare var closeLoginModalButton: HTMLIonButtonElement
 
 // 新增收藏相關函數
 async function toggleFavorite(itemId: number) {
@@ -177,34 +182,6 @@ async function loaditems() {
               loaditems()
 
 
-declare var usernameInput: HTMLIonInputElement
-declare var passwordInput: HTMLIonInputElement
-declare var loginButton: HTMLIonButtonElement
-declare var registerButton: HTMLIonButtonElement
-
-loginButton.addEventListener('click', async () =>{
-
-  let username = usernameInput.value
-  let password = passwordInput.value
-
-  let res = await fetch(`${baseUrl}/auth/login`, {
-    method: 'POST',
-    body: JSON.stringify({ username, password }),
-  })
-let json = await res.json()
-if(json.error){
-  errorToast.message = json.error
-  errorToast.present()
-  return
-}
-token = json.token
-localStorage.setItem('token', json.token)
-loaditems()
-})
-
-
-
-
         // 為收藏按鈕添加點擊事件
         let favBtn = card.querySelector(`#fav-btn-${item.id}`)
 
@@ -227,8 +204,62 @@ loaditems()
                 }
             })
         }
+    
+
+    // 登入相關功能
+    async function handleAuth(mode: 'signup' | 'login') {
+        try {
+            let username = await usernameInput.getInputElement().then(input => input?.value || '')
+            let password = await passwordInput.getInputElement().then(input => input?.value || '')
+
+            if (!username || !password) {
+                errorToast.message = '請輸入帳號和密碼'
+                errorToast.present()
+                return
+            }
+
+            let res = await fetch(`${baseUrl}/auth/${mode}`, {
+                method: 'POST',
+                body: JSON.stringify({ username, password }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            let json = await res.json()
+            if (json.error) {
+                errorToast.message = json.error
+                errorToast.present()
+                return
+            }
+
+            localStorage.setItem('token', json.token)
+            successToast.message = mode === 'login' ? '登入成功' : '註冊成功'
+            successToast.present()
+            loginModal.dismiss()
+            
+            // 重新載入課程列表以更新收藏狀態
+            loaditems()
+        } catch (error) {
+            errorToast.message = '操作失敗，請稍後再試'
+            errorToast.present()
+        }
     }
-}
+
+    // 設置登入相關按鈕的事件監聽
+    loginButton?.addEventListener('click', () => handleAuth('login'))
+    registerButton?.addEventListener('click', () => handleAuth('signup'))
+    closeLoginModalButton?.addEventListener('click', () => {
+        loginModal.dismiss()
+        // 清空輸入框
+        usernameInput.value = ''
+        passwordInput.value = ''
+    })
+
+    // 當 Modal 關閉時清空輸入框
+    loginModal?.addEventListener('ionModalDidDismiss', () => {
+        usernameInput.value = ''
+        passwordInput.value = ''
+    })
 
 // 移除原本的 loadMoreItems 函數
 // function loadMoreItems() {
