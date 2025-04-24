@@ -13,6 +13,9 @@ declare var errorToast: IonToast
 
 declare var courseList: IonList
 
+// *** 將 page 的宣告移到這裡 ***
+let page = 1
+
 // 新增分頁按鈕宣告
 declare var prevPageButton: IonButton
 declare var nextPageButton: IonButton
@@ -24,7 +27,9 @@ nextPageButton.addEventListener('click', nextPage)
 let skeletonItem = courseList.querySelector('.skeleton-item')!
 skeletonItem.remove()
 
-let page = 1
+// *** 移除不再使用的 itemCardTemplate 相關程式碼 ***
+// let itemCardTemplate = courseList.querySelector('.item-card-template')!
+// itemCardTemplate.remove()
 
 
 async function loaditems() {
@@ -36,7 +41,8 @@ async function loaditems() {
     courseList.appendChild(skeletonItem.cloneNode(true))
     let token = ''
     let params = new URLSearchParams()
-    params.set('page', page.toString())
+    // *** 現在 page 應該已經被定義 ***
+    params.set('page', page.toString()) 
     let res = await fetch(`${baseUrl}/courses?${params}` , {
         method: 'GET',
         headers: {Authorization: `Bearer ${token}`}
@@ -56,7 +62,7 @@ async function loaditems() {
 
     type Result = {
         error:string
-        items: ServerItem[]
+        items: Item[]
         pagination:{
             page:number
             limit:number
@@ -64,7 +70,7 @@ async function loaditems() {
         }
     }
 
-    type ServerItem = {
+    type Item = {
         category: string
         description: string
         id: number
@@ -76,29 +82,17 @@ async function loaditems() {
         title: string
         video_url: string
     }
-    let serverItems = json.items as ServerItem[]
-    let uiItems = json.items.map((item: ServerItem) => {
-        return {
-            id: item.id,
-            title: item.title,
-            domin: item.language,
-            level: item.level,
-            description: item.description,
-            tags: item.tags,
-            imageUrl: item.image_url,
-            videoUrl: item.video_url,    
-        }
-    })
-    console.log('items:', uiItems)
+    let Items = json.items as Item[]
+    console.log('items:', Items)
 
     courseList.textContent=''
-    for(let item of uiItems){
+    for(let item of Items) {
         let card = document.createElement('ion-card')
         card.innerHTML = `
         <ion-card style="width: 100%;">
           <div class="video-thumbnail">
-            <img src="${item.imageUrl}" alt="${item.title}" class="course-image">
-            <div class="play-button" onclick="openVideoModal('${item.videoUrl}', '${item.title}')">
+            <img src="${item.image_url}" alt="${item.title}" class="course-image" style="width: 100%; height: 200px; object-fit: cover;">
+            <div class="play-button" onclick="openVideoModal('${item.video_url}', '${item.title}')">
               <ion-icon name="play" color="light" size="large"></ion-icon>
             </div>
             <div class="favorite-button" id="fav-btn-${item.id}">
@@ -109,23 +103,38 @@ async function loaditems() {
             <div class="course-details">
               <div class="course-title">${item.title}</div>
               <div class="course-meta">
-                <span>程式語言: Python 3.x</span>
+                <span>程式語言: ${item.language}</span>
                 <span>程度: ${item.level}</span>
               </div>
               <div class="course-description">
                 ${item.description}
               </div>
               <div class="tag-container">
-                ${item.tags.map(tag => 
-                  `<ion-chip  data-type="${tag} onclick="filterByTag('${tag}')">${tag}</ion-chip>`
-                ).join('')}
+                ${Array.isArray(item.tags) ? item.tags.map(tag => 
+                  `<ion-chip outline data-type="${tag}">${tag}</ion-chip>`
+                ).join('') : ''}
               </div>
             </div>
           </ion-card-content>
         </ion-card>
-    `
-    
-    courseList.appendChild(card)
+        `
+        
+        courseList.appendChild(card)
+
+        // 為收藏按鈕添加點擊事件
+        const favBtn = card.querySelector(`#fav-btn-${item.id}`)
+        if (favBtn) {
+            favBtn.addEventListener('click', (event) => {
+                event.stopPropagation()
+                const icon = favBtn.querySelector('ion-icon')
+                if (icon) {
+                    const isFavorite = icon.name === 'heart'
+                    icon.name = isFavorite ? 'heart-outline' : 'heart'
+                    favBtn.classList.toggle('active')
+                    // 可以在這裡添加收藏相關的 API 調用
+                }
+            })
+        }
     }
 }
 
