@@ -163,7 +163,27 @@
               <ion-icon name="close" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-toolbar>
+          </ion-header>
+          <ion-content>
+            <ion-list>
+              <ion-input 
+                id="usernameInput" 
+                type="text" 
+                label="Username"
+                label-placement="floating"
+              ></ion-input>
+              <ion-input 
+                id="passwordInput"
+                type="password" 
+                label="Password"
+                label-placement="floating"
+              ></ion-input>
+             <ion-button expand="block" id="loginButton">登入</ion-button>
+             <ion-button expand="block" id="registerButton">註冊</ion-button>
+            </ion-list>
+          </ion-content>
       </ion-modal>
+
       <ion-toast id="errorToast" duration ="5000" color = "danger"></ion-toast>
 
     </ion-content>

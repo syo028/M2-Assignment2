@@ -28,8 +28,10 @@ let skeletonItem = courseList.querySelector('.skeleton-item')!
 skeletonItem.remove()
 
 // *** 移除不再使用的 itemCardTemplate 相關程式碼 ***
-// let itemCardTemplate = courseList.querySelector('.item-card-template')!
-// itemCardTemplate.remove()
+let itemCardTemplate = courseList.querySelector('.item-card-template')!
+itemCardTemplate.remove()
+
+
 
 declare var loginModal: HTMLIonModalElement
 declare var successToast: IonToast
@@ -171,6 +173,37 @@ async function loaditems() {
         `
         
         courseList.appendChild(card)
+              }}
+              loaditems()
+
+
+declare var usernameInput: HTMLIonInputElement
+declare var passwordInput: HTMLIonInputElement
+declare var loginButton: HTMLIonButtonElement
+declare var registerButton: HTMLIonButtonElement
+
+loginButton.addEventListener('click', async () =>{
+
+  let username = usernameInput.value
+  let password = passwordInput.value
+
+  let res = await fetch(`${baseUrl}/auth/login`, {
+    method: 'POST',
+    body: JSON.stringify({ username, password }),
+  })
+let json = await res.json()
+if(json.error){
+  errorToast.message = json.error
+  errorToast.present()
+  return
+}
+token = json.token
+localStorage.setItem('token', json.token)
+loaditems()
+})
+
+
+
 
         // 為收藏按鈕添加點擊事件
         let favBtn = card.querySelector(`#fav-btn-${item.id}`)
