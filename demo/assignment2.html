@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>程式教學</title>
+    <title>PYTHON教學</title>
 
     <script 
     type="module" 
@@ -27,10 +27,13 @@
   <ion-app>
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title >Python 課程教學</ion-title>
-        <ion-button id="refreshButton">
-          <ion-icon name="refresh" slot="end"></ion-icon>
-        </ion-button>
+        <ion-title class="ion-text-center">Python 課程教學</ion-title>
+        <ion-buttons slot="end">
+          <ion-button color="light" id="refreshButton">
+            <ion-icon name="refresh" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        
       </ion-toolbar>
 
       <!--搜尋功能-->
@@ -108,40 +111,31 @@
             </p>
           </ion-label>
         </ion-item>
-        <ion-card>
-          <ion-card style="width: 100%;">
-            <div class="video-thumbnail">
-              <img src="" alt="" class="course-image">
-              <div class="play-button" onclick="openVideoModal('', '')">
-                <ion-icon name="play" color="light" size="large"></ion-icon>
-              </div>
-              <div class="favorite-button" id="fav-btn-${item.id}">
-                <ion-icon name="heart-outline"></ion-icon>
+        <ion-card class="item-card">
+          <div class="video-thumbnail">
+            <img src="" alt="" class="course-image">
+            <div class="play-button">
+              <ion-icon name="play" color="light" size="large"></ion-icon>
+            </div>
+            <div class="favorite-button">
+              <ion-icon name="star-outline" class="favorite-btn"></ion-icon>
+            </div>
+          </div>
+          <ion-card-content>
+            <div class="course-details">
+              <div class="item-title"></div>
+              <div class="item-subtitle"></div>
+              <div class="item-details"></div>
+              <div class="item-date"></div>
+              <div class="tag-container">
+                <ion-chip class="tag" data-type="">
+                  sample tag
+                </ion-chip>
               </div>
             </div>
-            <ion-card-content>
-              <div class="course-details">
-                <div class="course-title"></div>
-                <div class="course-meta">
-                  <span>程式語言: </span>
-                  <span>程度: </span>
-                </div>
-                <div class="course-description">
-                  
-                </div>
-                <div class="tag-container">
-                <ion-chip  class="tag" data-type="" onclick="filterByTag('')">
-                sample tag
-                </ion-chip>
-                 
-                </div>
-              </div>
-            </ion-card-content>
+          </ion-card-content>
         </ion-card>
       </ion-list>
-
-
-
 
       <div style="display: flex; justify-content: space-between; padding: 10px;">
         <ion-button id="prevPageButton">
@@ -153,40 +147,8 @@
           <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
         </ion-button>
       </div>
- 
-      <!-- Log In Modal -->
-      <ion-modal id="loginModal">
-        <ion-header>
-          <ion-toolbar>
-            <ion-title>登入/註冊</ion-title>
-            <ion-buttons slot="end">
-              <ion-button id="closeLoginModalButton">
-                <ion-icon name="close"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
-        <ion-content class="ion-padding">
-          <ion-item>
-            <ion-label position="stacked">帳號</ion-label>
-            <ion-input id="usernameInput" type="text" placeholder="請輸入帳號"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked">密碼</ion-label>
-            <ion-input id="passwordInput" type="password" placeholder="請輸入密碼"></ion-input>
-          </ion-item>
-          <div class="ion-padding">
-            <ion-button id="loginButton" expand="block">登入</ion-button>
-            <ion-button id="registerButton" expand="block" color="secondary">註冊</ion-button>
-          </div>
-        </ion-content>
-      </ion-modal>
-
-      <ion-toast id="errorToast" duration="3000" color="danger"></ion-toast>
-      <ion-toast id="successToast" duration="2000" color="success"></ion-toast>
-
     </ion-content>
-
+    
     <!-- 影片播放 Modal -->
     <ion-modal id="video-modal">
       <ion-header>
@@ -203,10 +165,9 @@
         </div>
       </ion-content>
     </ion-modal>
+
+    <ion-toast id="errorToast" duration="3000" position="bottom"></ion-toast>
   </ion-app>
-  
-  ,<script src="bundle.js"></script>
-
-
+  <script src="bundle.js"></script>
 </body>
 </html>
